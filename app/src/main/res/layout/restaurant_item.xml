@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="wrap_content"
+                                                   android:paddingBottom="10dp">
+
+    <TextView
+            android:text="가게 이름"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/resName"
+            android:textAlignment="center" android:gravity="center_horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline" android:layout_marginTop="10dp"/>
+    <TextView
+            android:text="가게 주소"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:id="@+id/resAddress"
+            android:textAlignment="center" android:gravity="center_horizontal"
+            app:layout_constraintStart_toStartOf="@+id/resName"
+            app:layout_constraintTop_toBottomOf="@+id/resName" android:layout_marginTop="5dp"/>
+
+    <androidx.constraintlayout.widget.Guideline
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/guideline" app:layout_constraintGuide_percent="0.4"/>
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="0dp"
+                  android:orientation="horizontal"
+                  android:gravity="center" app:layout_constraintStart_toStartOf="@+id/guideline"
+                  app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@+id/resName"
+                  android:id="@+id/linearLayout">
+        <ImageView
+                android:id="@+id/iv1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/yelp"/>
+        <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/ratingBar1"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:numStars="5"/>
+
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="0dp"
+                  android:orientation="horizontal"
+                  android:gravity="center" app:layout_constraintStart_toStartOf="@+id/guideline"
+                  app:layout_constraintTop_toTopOf="@+id/resAddress" app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+                android:id="@+id/iv2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/google"
+                app:layout_constraintTop_toTopOf="@+id/resAddress"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintEnd_toStartOf="@+id/ratingBar2"/>
+        <RatingBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/ratingBar2"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:numStars="5" app:layout_constraintStart_toEndOf="@+id/iv2"
+                app:layout_constraintTop_toTopOf="@+id/resAddress"
+                app:layout_constraintEnd_toEndOf="parent"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="17dp" app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/resAddress" android:layout_marginTop="10dp"
+            android:id="@+id/linearLayout2">
+
+        <ImageButton
+                android:id="@+id/btn1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/calendar_closed"
+                android:padding="3dp"
+                android:backgroundTint="#FF0000"
+                android:background="@drawable/restaurant_left_radius"/>
+        <Button
+                android:text="$$"
+                android:layout_width="53dp"
+                android:layout_height="match_parent" android:id="@+id/btn2"
+                android:padding="3dp"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/button"
+                android:backgroundTint="#D3D3D3"/>
+
+        <ImageButton
+                android:text="MenuBoard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/menuBtn"
+                android:padding="3dp"
+                android:layout_alignParentTop="true"
+                android:src="@drawable/menu_board"
+                android:background="@drawable/button"/>
+
+        <ImageButton
+                android:text="PhoneNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:id="@+id/btn4"
+                android:padding="3dp"
+                android:layout_alignParentTop="true"
+                android:backgroundTint="#D3D3D3"
+                android:background="@drawable/restaurant_right_radius"
+                android:src="@drawable/phone_call"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:gravity="center_horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent">
+        <Button
+                android:text="UberEats"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/uberButton" android:layout_weight="1"
+                android:textColor="#ffffff"
+                android:background="@drawable/restaurant_left_radius"
+                android:layout_alignParentTop="true"
+                android:backgroundTint="#ff0000"/>
+        <Button
+                android:text="Gurbhub"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/GrubButton" android:layout_weight="1"
+                android:textColor="#ffffff"
+                android:layout_alignParentTop="true"
+                android:background="#ff0000"/>
+        <Button
+                android:text="DoorDash"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" android:id="@+id/DoorButton" android:layout_weight="1"
+                android:textColor="#ffffff"
+                android:background="@drawable/restaurant_right_radius"
+                android:layout_alignParentTop="true"
+                android:backgroundTint="#ff0000"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
