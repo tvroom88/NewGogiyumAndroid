@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.android.rgd.my_option_meny.MainActivity">
+
+    <item android:title="Main Menu"
+          app:showAsAction="always"
+          android:icon="@drawable/menu_icon">
+        <menu>
+            <item
+                    android:id="@+id/language"
+                    android:orderInCategory="100"
+                    android:title="Language : Korean"
+                    android:icon="@drawable/ko1"
+                    app:showAsAction="never"/>
+            <item
+                    android:id="@+id/bookmark"
+                    android:orderInCategory="100"
+                    android:title="Bookmark - Restaurants"
+                    android:icon="@drawable/bookmark2"
+                    app:showAsAction="never"/>
+        </menu>
+    </item>
+</menu>
