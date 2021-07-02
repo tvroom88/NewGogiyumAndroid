@@ -23,11 +23,11 @@ import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
+    var data: MutableList<FoodList> = mutableListOf()
+
     companion object {
         private const val MENU_URL = "https://gogiyum.com/api/menu"
-        var data: MutableList<FoodList> = mutableListOf()
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
