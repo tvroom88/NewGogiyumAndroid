@@ -25,10 +25,6 @@ class MainActivity : AppCompatActivity() {
 
     var data: MutableList<FoodList> = mutableListOf()
 
-    companion object {
-        private const val MENU_URL = "https://gogiyum.com/api/menu"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -45,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     fun readData() {
         val client = OkHttpClient.Builder().build()
-        val req = Request.Builder().url(MENU_URL).build()
+        val req = Request.Builder().url(ConstantsCollector.MENU_URL).build()
         client.newCall(req).enqueue(object: Callback {
             override fun onFailure(call: Call, e: IOException) {
                 // failure
@@ -119,3 +115,4 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+

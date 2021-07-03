@@ -9,3 +9,4 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.detail_activity)
     }
 }
+
