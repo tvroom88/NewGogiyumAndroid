@@ -1,15 +1,15 @@
 package com.newgogiyumandroid
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.newgogiyumandroid.JsonParsingLists.FoodList
 import com.newgogiyumandroid.JsonParsingLists.RestaurantList
-import com.newgogiyumandroid.RecyclerView.CustomAdapter
 import com.newgogiyumandroid.RecyclerView.RestaurantAdapter
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import java.net.URL
+
 
 class RestaurantListActivity : AppCompatActivity() {
 
@@ -47,8 +47,6 @@ class RestaurantListActivity : AppCompatActivity() {
 
             runOnUiThread {
 
-
-
                 // 2. 어뎁터 생성
                 val adapter = RestaurantAdapter()
                 // 3. 어뎁터에 데이터 전달
@@ -68,6 +66,7 @@ class RestaurantListActivity : AppCompatActivity() {
         val data = connection.getInputStream().readBytes().toString(charset("UTF-8"))
         return JSONArray(data)
     }
-}
 
+
+}
 

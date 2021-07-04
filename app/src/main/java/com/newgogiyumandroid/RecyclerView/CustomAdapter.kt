@@ -9,6 +9,8 @@ import com.bumptech.glide.Glide
 import com.newgogiyumandroid.JsonParsingLists.FoodList
 import com.newgogiyumandroid.R
 import com.newgogiyumandroid.RestaurantListActivity
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.recyler_item.view.*
 
 
