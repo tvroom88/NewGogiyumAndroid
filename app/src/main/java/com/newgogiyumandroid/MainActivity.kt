@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.newgogiyumandroid.JsonParsingLists.FoodList
 import com.newgogiyumandroid.RecyclerView.CustomAdapter
 import kotlinx.android.synthetic.main.activity_main.*
@@ -20,10 +21,16 @@ import okhttp3.*
 import org.json.JSONArray
 import java.io.IOException
 
+var data: MutableList<FoodList> = mutableListOf()
 
 class MainActivity : AppCompatActivity() {
 
-    var data: MutableList<FoodList> = mutableListOf()
+    //current Language
+    var curLang: String = "Ko"
+
+    var menu: Menu? = null
+
+    val adapter = CustomAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,24 +65,24 @@ class MainActivity : AppCompatActivity() {
 
                         val imageUrl: String = jsonObject.getString("image")
                         val name = jsonObject.getString("name")
+                        val kname = jsonObject.getString("name")
                         val ename = jsonObject.getString("e_name")
 
-                        val foodList = FoodList(imageUrl, name, ename)
+                        val foodList = FoodList(imageUrl, name, kname, ename)
                         data.add(foodList)
                     }
 
                     progressImg.visibility = View.GONE
                     // 2. 어뎁터 생성
-                    val adapter = CustomAdapter()
                     // 3. 어뎁터에 데이터 전달
                     adapter.listData = data
+
                     // 4. 화면에 있는 리사이클러뷰에 어답터 연결 - recycler 은 recycler_view_example에 있는 recycler view  Id 임
                     recycler.adapter = adapter
                     // 5. 레이아웃 매니저 연결
                     recycler.layoutManager = LinearLayoutManager(applicationContext)
                 }
             }
-
         })
     }
 
@@ -94,6 +101,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater: MenuInflater = menuInflater
         inflater.inflate(R.menu.toolbar_menu, menu)
+
         return true
     }
 
@@ -101,11 +109,30 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.language -> {
-                item.setIcon(R.drawable.en1)
-                item.setTitle("Language : English")
-                Toast.makeText(applicationContext, "Language : English", Toast.LENGTH_SHORT).show()
+
+                when(curLang) {
+                    "Ko" -> {
+                        curLang = "En"
+                        item.setIcon(R.drawable.en1)
+                        item.setTitle("Language : English")
+                        Toast.makeText(applicationContext, "Language : English", Toast.LENGTH_SHORT).show()
+
+                    }
+                    else -> {
+                        curLang = "Ko"
+                        item.setIcon(R.drawable.ko1)
+                        item.setTitle("Language : Korean")
+                        Toast.makeText(applicationContext, "Language : Korean", Toast.LENGTH_SHORT).show()
+
+                    }
+                }
+
+                changeName(curLang)
+                adapter.listData = data
+                adapter.notifyDataSetChanged()
                 true
             }
+
             R.id.bookmark ->{
                 Toast.makeText(applicationContext, "click on bookmark", Toast.LENGTH_SHORT).show()
                 return true
@@ -114,5 +141,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun changeName(language : String){
+
+        when(language) {
+            "En" -> {
+                for(data1 in data){
+                    data1.name = data1.e_name
+                }
+            }
+            "Ko" -> {
+                for(data1 in data){
+                    data1.name = data1.k_name
+                }
+            }
+        }
+    }
 }
 

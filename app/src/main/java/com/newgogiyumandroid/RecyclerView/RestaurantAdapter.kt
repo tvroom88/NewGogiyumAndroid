@@ -47,6 +47,7 @@ class RestaurantHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
     fun setRestaurantList(restuarantList: RestaurantList){
         itemView.resName.text = restuarantList.name
     }
+
 }
 
 

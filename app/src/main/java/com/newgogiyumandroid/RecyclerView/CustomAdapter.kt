@@ -18,6 +18,14 @@ class CustomAdapter : RecyclerView.Adapter<Holder>() {
 
     var listData = mutableListOf<FoodList>()
 
+    init {
+        setHasStableIds(true)
+    }
+
+
+    //current language
+    var curLang: String = null ?: ""
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.recyler_item, parent, false)
         return Holder(itemView)
@@ -30,7 +38,10 @@ class CustomAdapter : RecyclerView.Adapter<Holder>() {
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val foodList = listData.get(position)
         holder.setFoodList(foodList)
+    }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
     }
 }
 
@@ -44,12 +55,13 @@ class Holder(itemView: View) : RecyclerView.ViewHolder(itemView){
         }
     }
 
-    fun setFoodList(foodList: FoodList){
+    fun setFoodList(foodList: FoodList) {
         itemView.foodImageKName.text = foodList.name
         Glide.with(itemView)
             .load(foodList.imageURL)
             .into(itemView.imageView1)
     }
+
 }
 
 
