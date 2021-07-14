@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.newgogiyumandroid.JsonParsingLists.RestaurantList
 import com.newgogiyumandroid.RecyclerView.RestaurantAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.recycler
+import kotlinx.android.synthetic.main.restaurant_list_activity.*
 import org.json.JSONArray
 import java.net.URL
 
@@ -15,9 +17,15 @@ class RestaurantListActivity : AppCompatActivity() {
 
     var data: MutableList<RestaurantList> = mutableListOf()
 
+    lateinit var foodName:String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.restaurant_list_activity)
+
+        foodName = intent.getStringExtra("kFoodName").toString()
+        val name = intent.getStringExtra("name").toString()
+        tv1.text = name
 
         val thread = NetworkThread()
         thread.start()
@@ -40,8 +48,20 @@ class RestaurantListActivity : AppCompatActivity() {
                 val grubURL = jsonObject.getString("grubhub")
                 val doorURL = jsonObject.getString("doordash")
 
+                val weekday_text = jsonObject.getString("weekday_text")
 
-                val restaurantList = RestaurantList(name, address, yelpRating,googleRating, uberURL, grubURL, doorURL)
+                val price = jsonObject.getString("price")
+                val menu = jsonObject.getString("menu")
+                val phone : String
+                if (jsonObject.has("phone")) {
+                    phone = jsonObject.getString("phone")
+                }else{
+                    phone = ""
+                }
+
+                val restaurantList = RestaurantList(name, address, yelpRating, googleRating, uberURL, grubURL, doorURL,
+                    weekday_text, price, menu, phone)
+
                 data.add(restaurantList)
             }
 
@@ -61,7 +81,8 @@ class RestaurantListActivity : AppCompatActivity() {
 
     // 식당 정보를 읽어와 JSONArray 로 반환하는 함수
     fun readData(): JSONArray {
-        val url = URL("https://gogiyum.com/api/restaurant")
+//        val url = URL("https://gogiyum.com/api/restaurant?food=짜장면&city=seattle")
+        val url = URL(ConstantsCollector.RESTAURANTURL(foodName))
         val connection = url.openConnection()
         val data = connection.getInputStream().readBytes().toString(charset("UTF-8"))
         return JSONArray(data)

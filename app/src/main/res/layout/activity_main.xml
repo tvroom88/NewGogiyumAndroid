@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        tools:context=".MainActivity" style="@style/ToolbarTitleStyle.Dark" tools:ignore="MissingClass">
 
     <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -16,7 +16,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-        <!--            app:titleTextColor="@color/colorWhite"-->
 
         <TextView
                 android:text="Gogiyum"
@@ -29,6 +28,18 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tagHorizontalView"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent"
+                      android:orientation="horizontal"
+                      android:layout_marginBottom="10dp"
+                      android:id="@+id/tagLinearLayout">
+
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
@@ -36,8 +47,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
-
+            app:layout_constraintTop_toBottomOf="@+id/tagHorizontalView">
+    </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
             android:layout_width="100dp"
@@ -48,4 +59,15 @@
             app:layout_constraintHorizontal_bias="0.5" android:id="@+id/progressImg"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/bottom_navigation_menu" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/nav_background_curved"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
