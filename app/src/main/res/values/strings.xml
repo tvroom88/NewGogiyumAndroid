@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">NewGogiyumAndroid</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="gogiyum">Gogiyum</string>
+    <string name="food_name">Food Name</string>
+    <string name="ubereats">Uber Eats</string>
+    <string name="gurbhub">Gurbhub</string>
+    <string name="doordash">Doordash</string>
 </resources>

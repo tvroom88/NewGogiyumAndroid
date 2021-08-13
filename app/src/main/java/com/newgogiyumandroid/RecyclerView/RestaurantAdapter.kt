@@ -1,7 +1,6 @@
 package com.newgogiyumandroid.RecyclerView
 
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -9,13 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.core.content.ContextCompat.startActivity
+import android.widget.TextView
+import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.RecyclerView
-import com.newgogiyumandroid.DetailActivity
+import androidx.room.Room
 import com.newgogiyumandroid.JsonParsingLists.RestaurantList
 import com.newgogiyumandroid.R
+import com.newgogiyumandroid.RoomDataBase.SavedRestaurantDataBase
+import kotlinx.android.synthetic.main.recyler_item.view.*
 import kotlinx.android.synthetic.main.restaurant_item.view.*
-import java.util.*
+import kotlinx.android.synthetic.main.saved_food_item.view.*
+import kotlinx.android.synthetic.main.saved_restaurant_item.*
 
 
 class RestaurantAdapter: RecyclerView.Adapter<RestaurantHolder>() {
@@ -26,10 +29,20 @@ class RestaurantAdapter: RecyclerView.Adapter<RestaurantHolder>() {
         setHasStableIds(true)
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.restaurant_item, parent, false)
-        return RestaurantHolder(itemView)
+
+        // 싱글톤 패턴을 사용하지 않은 경우
+        val db = Room.databaseBuilder(
+            parent.context,
+            SavedRestaurantDataBase::class.java,
+            "savedRestaurant-database"
+        ).allowMainThreadQueries() // 그냥 강제로 실행
+            .fallbackToDestructiveMigration()
+            .build()
+
+
+        return RestaurantHolder(itemView, db)
     }
 
     override fun getItemCount(): Int {
@@ -46,82 +59,104 @@ class RestaurantAdapter: RecyclerView.Adapter<RestaurantHolder>() {
     }
 }
 
-class RestaurantHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+class RestaurantHolder(itemView: View, val db: SavedRestaurantDataBase) : RecyclerView.ViewHolder(itemView){
     // 여기다가 onClickListener
-    init {
-        itemView.setOnClickListener(){
-            val intent = Intent(itemView.context, DetailActivity::class.java)
-            intent.putExtra("name", itemView.resName.text)
-            itemView.context.startActivity(intent)
-        }
-    }
-
+//    init {
+//        itemView.setOnClickListener(){
+//            val intent = Intent(itemView.context, DetailActivity::class.java)
+//            intent.putExtra("name", itemView.resName.text)
+//            itemView.context.startActivity(intent)
+//        }
+//    }
+//
     fun setRestaurantList(restuarantList: RestaurantList) {
         itemView.resName.text = restuarantList.name
         itemView.resAddress.text = restuarantList.address
-        itemView.ratingBar1.rating = restuarantList.yrating.toFloat()
-        itemView.ratingBar2.rating = restuarantList.grating.toFloat()
-        itemView.btn2.text = when (restuarantList.price) {
-            "" -> "?"
-            else -> restuarantList.price
+        itemView.yelp_rating_textview.text = restuarantList.yrating.toString()
+        itemView.google_rating_textview.text = restuarantList.grating.toString()
+        itemView.yelp_rating_bar.rating = restuarantList.yrating.toFloat()
+        itemView.google_rating_bar.rating = restuarantList.grating.toFloat()
+//        itemView.btn2.text = when (restuarantList.price) {
+//            "" -> "?"
+//            else -> restuarantList.price
+//        }
+
+//      line 처리를 위해
+         itemView.resName.setMaxLinesToEllipsize()
+//        put DataBase
+        val itemMenuName = itemView.resName.text as String
+        var alreadyExist = db.savedRestaurantDao().exists(itemMenuName)
+
+        if(alreadyExist){
+            itemView.saved.setImageResource(R.drawable.saved_black)
         }
 
-        itemView.menuBtn.setOnClickListener{
+        itemView.saved.setOnClickListener {
+            alreadyExist = db.savedRestaurantDao().exists(itemMenuName)
+            if(alreadyExist){
+                db.savedRestaurantDao().deleteMenuByName(itemMenuName)
+                itemView.saved.setImageResource(R.drawable.saved)
+            }else{
+                db.savedRestaurantDao().insert(restuarantList)
+                itemView.saved.setImageResource(R.drawable.saved_black)
+            }
+//            itemView.showNumOfSaved.text = db.savedRestaurantDao().getAll().size.toString()
+        }
+
+
+
+        itemView.menuButton.setOnClickListener{
             goToUrl(restuarantList.menu)
         }
-
-        itemView.btn4.setOnClickListener {
+//
+        itemView.callButton.setOnClickListener {
             when (restuarantList.phone) {
                 "" ->   {
-                    val popupMenu = PopupMenu(itemView.context, itemView.btn4)
+                    val popupMenu = PopupMenu(itemView.context, itemView.callButton)
                     popupMenu.menuInflater.inflate(R.menu.phone_popup_menu,popupMenu.menu)
                     popupMenu.show()
                 }
-                else -> itemView.btn4.setOnClickListener {
+                else -> itemView.callButton.setOnClickListener {
                     phoneCall(restuarantList.phone)
                 }
             }
         }
-
-        when(restuarantList.uberURL){
+        when (restuarantList.uberURL) {
             "0" -> {
-                itemView.uberButton.alpha = 0.2F
-                itemView.testTV1.text = ""
+                itemView.uberButton.setTextColor(Color.rgb(176, 176, 176))
+                itemView.uberButton.setBackgroundResource(R.drawable.restaurant_button_empty)
+                itemView.uberButton.isClickable = false
             }
-
             else -> {
-//                itemView.uberButton.alpha = 1.0F
-                itemView.uberButton.setOnClickListener{ goToUrl(restuarantList.uberURL) }
-                itemView.testTV1.text = "Url connected"
+                itemView.uberButton.setTextColor(Color.rgb(247, 247, 248))
+                itemView.uberButton.setBackgroundResource(R.drawable.restaurant_button)
+                itemView.uberButton.setOnClickListener { goToUrl(restuarantList.uberURL) }
             }
         }
-        when(restuarantList.gruhubURL){
-            "0" -> itemView.GrubButton.alpha = 0.2F
+        when (restuarantList.gruhubURL) {
+            "0" -> {
+                itemView.GrubButton.setTextColor(Color.rgb(176, 176, 176))
+                itemView.GrubButton.setBackgroundResource(R.drawable.restaurant_button_empty)
+                itemView.GrubButton.isClickable = false
+            }
             else -> {
-//                itemView.GrubButton.alpha = 1F
-                itemView.GrubButton.setOnClickListener{ goToUrl(restuarantList.gruhubURL) }
+                itemView.GrubButton.setTextColor(Color.rgb(247, 247, 248))
+                itemView.GrubButton.setBackgroundResource(R.drawable.restaurant_button)
+                itemView.GrubButton.setOnClickListener { goToUrl(restuarantList.gruhubURL) }
             }
         }
-        when(restuarantList.doordashURL){
-            "0" -> itemView.DoorButton.alpha = 0.2F
+        when (restuarantList.doordashURL) {
+            "0" -> {
+                itemView.DoorButton.setTextColor(Color.rgb(176, 176, 176))
+                itemView.DoorButton.setBackgroundResource(R.drawable.restaurant_button_empty)
+                itemView.DoorButton.isClickable = false
+            }
             else -> {
-//                itemView.DoorButton.alpha = 1F
-                itemView.DoorButton.setOnClickListener{ goToUrl(restuarantList.doordashURL) }
+                itemView.DoorButton.setTextColor(Color.rgb(247, 247, 248))
+                itemView.DoorButton.setBackgroundResource(R.drawable.restaurant_button)
+                itemView.DoorButton.setOnClickListener { goToUrl(restuarantList.doordashURL) }
             }
         }
-
-
-        //just check for time
-        time()
-    }
-
-    fun time(){
-        val calendar: Calendar = Calendar.getInstance()
-        val hour24hrs: Int = calendar.get(Calendar.HOUR_OF_DAY)
-        val hour12hrs: Int = calendar.get(Calendar.HOUR)
-        val minutes: Int = calendar.get(Calendar.MINUTE)
-        val seconds: Int = calendar.get(Calendar.SECOND)
-
     }
 
 
@@ -145,6 +180,11 @@ class RestaurantHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val uriUrl: Uri = Uri.parse(url)
         val launchBrowser = Intent(Intent.ACTION_VIEW, uriUrl)
         itemView.context.startActivity(launchBrowser)
+    }
+
+    fun TextView.setMaxLinesToEllipsize() = doOnPreDraw {
+        val numberOfCompletelyVisibleLines = (measuredHeight - paddingTop - paddingBottom) / lineHeight
+        maxLines = numberOfCompletelyVisibleLines
     }
 }
 

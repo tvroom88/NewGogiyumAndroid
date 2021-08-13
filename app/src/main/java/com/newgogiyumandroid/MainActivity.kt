@@ -1,175 +1,98 @@
 package com.newgogiyumandroid
 
-import android.content.Intent
+import android.content.Context
 import android.graphics.Color
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.View
+import android.util.DisplayMetrics
+import android.util.Log
+import android.util.TypedValue
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.google.android.gms.common.wrappers.InstantApps
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.newgogiyumandroid.JsonParsingLists.FoodList
+import com.newgogiyumandroid.MainActivityFragments.MenuListFragment
+import com.newgogiyumandroid.MainActivityFragments.ProfileFragment
+import com.newgogiyumandroid.MainActivityFragments.SavedListFragment
 import com.newgogiyumandroid.RecyclerView.CustomAdapter
 import com.veinhorn.tagview.TagView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.fragment_menu_list.*
 import okhttp3.*
-import org.json.JSONArray
-import java.io.IOException
-
-
-var data: MutableList<FoodList> = mutableListOf()
-
-// List for checking tagView is working well
-val tagList = listOf("All Menu", "Meat", "Sea", "food", "Sushi", "Fish",
-    "Soup", "Casual", "Noodle" , "Midnight", "Rice", "Soup", "Chinese", "Health",
-    "Snack", "Spicy", "Hangover", "Raining")
 
 
 class MainActivity : AppCompatActivity() {
 
-    val adapter = CustomAdapter()
+    val STATUS_INSTALLED = "installed"
+    val STATUS_INSTANT = "instant"
+    val ANALYTICS_USER_PROP = "app_type"
+
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+
+        // Determine the current app context, either installed or instant, then
+        // set the corresponding user property for Google Analytics.
+        if (InstantApps.isInstantApp(this)) {
+            firebaseAnalytics.setUserProperty(ANALYTICS_USER_PROP, STATUS_INSTANT)
+            Log.d("A", "A")
+        } else {
+            firebaseAnalytics.setUserProperty(ANALYTICS_USER_PROP, STATUS_INSTALLED)
+            Log.d("B", "B")
+        }
+
         //커스텀한 toolbar를 액션바로 사용
-        setSupportActionBar(toolbar)
+//        setSupportActionBar(toolbar)
 
         //액션바에 표시되는 제목의 표시유무를 설정합니다. false로 해야 custom한 툴바의 이름이 화면에 보이게 됩니다.
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
+        // main fragment 부분
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentsFrameLayout, MenuListFragment())
+            .commit()
 
-        if (checkInternetConnection()) {
-            readData()
-        } else {
-            progressImg.visibility = View.GONE
-        }
-
-        // adding tag
-        tagView()
-
-        //Bottom Navigation onClickListener
+        // bottom navigation
         bottomNavigation()
     }
 
-
-    //read datas from webpage
-    fun readData() {
-        val client = OkHttpClient.Builder().build()
-        val req = Request.Builder().url(ConstantsCollector.MENU_URL).build()
-        client.newCall(req).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                // failure
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val launch = CoroutineScope(Dispatchers.Main).launch {
-
-                    val body = response.body?.string()
-                    val jsonArray = JSONArray(body)
-
-                    for (i in 0 until jsonArray.length()) {
-                        val jsonObject = jsonArray.getJSONObject(i)
-
-                        val imageUrl: String = jsonObject.getString("image")
-                        val name = jsonObject.getString("name")
-                        val kname = jsonObject.getString("name")
-                        val ename = jsonObject.getString("e_name")
-
-                        val foodList = FoodList(imageUrl, name, kname, ename)
-                        data.add(foodList)
-                    }
-
-                    progressImg.visibility = View.GONE
-                    // 2. 어뎁터 생성
-                    // 3. 어뎁터에 데이터 전달
-                    adapter.listData = data
-
-                    // 4. 화면에 있는 리사이클러뷰에 어답터 연결 - recycler 은 recycler_view_example에 있는 recycler view  Id 임
-                    recycler.adapter = adapter
-                    // 5. 레이아웃 매니저 연결
-                    recycler.layoutManager = LinearLayoutManager(applicationContext)
-
-
-                }
-            }
-        })
-    }
-
-    // check Internet connection
-    fun checkInternetConnection(): Boolean {
-        val cm = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
-
-        if (activeNetwork != null)
-            return true
-
-        return false
-    }
-
-    //tagview part
-    fun tagView(){
-        val tagViewList = mutableListOf<TagView>()
-        var num:Int = -1
-        for(i in 0 until tagList.size){
-            val tagView = TagView(this, null)
-            tagView.text = tagList.get(i)
-            tagView.tagColor = Color.rgb(211, 211, 211)
-            tagView.tagTextColor = Color.rgb(105,105,105)
-            tagView.setTagBorderRadius(10)
-
-            val tagLayoutParams: LinearLayout.LayoutParams =
-                LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            tagLayoutParams.setMargins(20, 0, 0, 0)
-            tagView.setLayoutParams(tagLayoutParams);
-
-            tagViewList.add(tagView)
-            tagLinearLayout.addView(tagView)
-
-        }
-
-        // set onClickListener in all of View
-        for(i in 0 until tagList.size){
-            var tagView = tagViewList.get(i)
-            tagView.setOnClickListener{
-                if(num != -1){
-                    tagViewList.get(num).tagColor = Color.rgb(211, 211, 211)
-                    tagViewList.get(num).tagTextColor = Color.rgb(105,105,105)
-                }
-                tagView.tagColor = Color.rgb(255,20,147)
-                tagView.tagTextColor = Color.WHITE
-                num = i
-            }
-        }
-    }
-
-
     fun bottomNavigation(){
+
+//        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
         //Bottom Navigation onClickListener
         bottom_navigation?.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.page_1 -> {
                     // Respond to navigation item 1 click
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
+                    val fragmentA = MenuListFragment()
+                    changeFragment(fragmentA)
                 }
                 R.id.page_2 -> {
                     // Respond to navigation item 2 click
+                    val fragmentB = SavedListFragment()
+                    changeFragment(fragmentB)
                 }
                 R.id.page_3 -> {
                     // Respond to navigation item 3 click
+                    val fragmentC = ProfileFragment()
+                    changeFragment(fragmentC)
                 }
             }
-            return@setOnItemSelectedListener true
+
+            return@setOnItemSelectedListener true;
         }
     }
+
+    fun changeFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().replace(R.id.fragmentsFrameLayout, fragment).commit()
+    }
+
 
 // 나중에 language 바꿀부분
 //  액션버튼 클릭 했을 때

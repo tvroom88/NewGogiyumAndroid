@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "50187553214",
+    "project_id": "newgogiyumproject",
+    "storage_bucket": "newgogiyumproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:50187553214:android:45ff821e6eb19fb42111ef",
+        "android_client_info": {
+          "package_name": "com.newgogiyumandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "50187553214-e7u68bgvc0k5mn1nms26o5tbafos95an.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCO6H_hrJlr5JkASktf9Y5x1AVxIkIXPbA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "50187553214-e7u68bgvc0k5mn1nms26o5tbafos95an.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

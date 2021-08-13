@@ -7,6 +7,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name= "RobotoTextViewStyle" parent= "android:Widget.TextView" >
+        <item name= "android:fontFamily" > nunito_sans </item>
+    </style>
+    <style name= "RobotoButtonStyle" parent= "android:Widget.Button" >
+        <item name= "android:fontFamily" > nunito_sans </item>
+    </style>
+
     <style name="CustomTheme" parent="Theme.AppCompat.Light">
 
         <item name="contentInsetStart">0dp</item>
@@ -29,6 +36,20 @@
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
         <item name="colorPrimary">@color/cardview_light_background</item>
         <item name="colorOnPrimary">@color/colorPrimary</item>
+    </style>
+
+    <!--custom cardView Style-->
+    <style name="CustomCardViewStyle" parent="@style/Widget.MaterialComponents.CardView">
+        <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay_card_custom_corners</item>
+    </style>
+
+
+    <style name="ShapeAppearanceOverlay_card_custom_corners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopRight">16dp</item>
+        <item name="cornerSizeTopLeft">16dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
     </style>
 </resources>
 
